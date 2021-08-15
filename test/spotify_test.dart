@@ -1,7 +1,8 @@
 import 'dart:async';
+
+import 'package:spotify/spotify.dart';
 import 'package:spotify/src/spotify_mock.dart';
 import 'package:test/test.dart';
-import 'package:spotify/spotify.dart';
 
 Future main() async {
   var spotify = SpotifyApiMock(SpotifyApiCredentials(
@@ -202,6 +203,17 @@ Future main() async {
       expect(firstShow.type, 'show');
       expect(firstShow.name != null, true);
       expect(firstShow.id, '4XPl3uEEL9hvqMkoZrzbx5');
+    });
+  });
+
+  group('Player', () {
+    test('player', () async {
+      var result = await spotify.me.player();
+      expect(result == null, false);
+      expect(result.isShuffling, true);
+      expect(result.isPlaying, true);
+      expect(result.currentlyPlayingType, CurrentlyPlayingType.track);
+      expect(result.repeatState, RepeatState.off);
     });
   });
 
