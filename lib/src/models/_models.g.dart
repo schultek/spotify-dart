@@ -278,11 +278,12 @@ Player _$PlayerFromJson(Map<String, dynamic> json) {
     ..item = json['item'] == null
         ? null
         : Track.fromJson(json['item'] as Map<String, dynamic>)
-    ..currentlyPlayingType = _$enumDecode(
+    ..currentlyPlayingType = _$enumDecodeNullable(
         _$CurrentlyPlayingTypeEnumMap, json['currently_playing_type'])
-    ..isPlaying = json['is_playing'] as bool
-    ..isShuffling = json['shuffle_state'] as bool
-    ..repeatState = _$enumDecode(_$RepeatStateEnumMap, json['repeat_state']);
+    ..isPlaying = json['is_playing'] as bool?
+    ..isShuffling = json['shuffle_state'] as bool?
+    ..repeatState =
+        _$enumDecodeNullable(_$RepeatStateEnumMap, json['repeat_state']);
 }
 
 const _$CurrentlyPlayingTypeEnumMap = {
