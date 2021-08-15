@@ -82,8 +82,14 @@ class Me extends EndpointPaging {
     return Player.fromJson(map);
   }
 
-  Future<void> play() async {
-    await _api._put('$_path/player/play');
+  Future<void> play(String? uri) async {
+    await _api._put(
+        '$_path/player/play',
+        uri != null
+            ? json.encode({
+                'uris': [uri],
+              })
+            : '');
   }
 
   Future<void> pause({String? deviceId}) async {
