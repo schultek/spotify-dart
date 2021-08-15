@@ -82,6 +82,23 @@ class Me extends EndpointPaging {
     return Player.fromJson(map);
   }
 
+  Future<Player> play() async {
+    var jsonString = await _api._put('$_path/player/play');
+
+    var map = json.decode(jsonString);
+    return Player.fromJson(map);
+  }
+
+  Future<Player> pause({String deviceId}) async {
+    var jsonString = await _api._put('$_path/player/pause?' +
+        _buildQuery({
+          'deviceId': deviceId,
+        }));
+
+    var map = json.decode(jsonString);
+    return Player.fromJson(map);
+  }
+
   /// Get the current user's top tracks.
   Future<Iterable<Track>> topTracks() async {
     var jsonString = await _api._get('$_path/top/tracks');
