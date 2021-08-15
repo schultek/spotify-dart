@@ -82,7 +82,7 @@ Future<void> _followingArtists(SpotifyApi spotify) async {
   }).catchError((ex) => _prettyPrintError(ex));
 }
 
-void _shuffle(bool state, SpotifyApi spotify) async {
+Future<void> _shuffle(bool state, SpotifyApi spotify) async {
   await spotify.me.shuffle(state).then((player) {
     print('Shuffle: ${player.isShuffling}');
   }).catchError((ex) => _prettyPrintError(ex));

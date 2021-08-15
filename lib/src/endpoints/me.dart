@@ -27,11 +27,11 @@ class Me extends EndpointPaging {
   }
 
   /// Get the object currently being played on the user’s Spotify account.
-  Future<Player> currentlyPlaying() async {
+  Future<Player?> currentlyPlaying() async {
     var jsonString = await _api._get('$_path/player/currently-playing');
 
     if (jsonString.isEmpty) {
-      return Player();
+      return null;
     }
 
     var map = json.decode(jsonString);
@@ -61,7 +61,7 @@ class Me extends EndpointPaging {
   /// to turn it off respectively.
   /// Returns the current player state by making another request.
   /// See [player([String market])];
-  Future<Player> shuffle(bool state, [String deviceId]) async {
+  Future<Player> shuffle(bool state, [String? deviceId]) async {
     return _api
         ._put('v1/me/player/shuffle?' +
             _buildQuery({'state': state, 'deviceId': deviceId}))
@@ -75,7 +75,7 @@ class Me extends EndpointPaging {
     });
   }
 
-  Future<Player> player([String market]) async {
+  Future<Player> player([String? market]) async {
     var jsonString =
         await _api._get('v1/me/player?' + _buildQuery({'market': market}));
     final map = json.decode(jsonString);
@@ -89,7 +89,7 @@ class Me extends EndpointPaging {
     return Player.fromJson(map);
   }
 
-  Future<Player> pause({String deviceId}) async {
+  Future<Player> pause({String? deviceId}) async {
     var jsonString = await _api._put('$_path/player/pause?' +
         _buildQuery({
           'deviceId': deviceId,
