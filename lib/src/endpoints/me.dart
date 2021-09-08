@@ -61,7 +61,7 @@ class Me extends EndpointPaging {
   /// to turn it off respectively.
   /// Returns the current player state by making another request.
   /// See [player([String market])];
-  Future<Player> shuffle(bool state, [String? deviceId]) async {
+  Future<Player?> shuffle(bool state, [String? deviceId]) async {
     return _api
         ._put('v1/me/player/shuffle?' +
             _buildQuery({'state': state, 'deviceId': deviceId}))
@@ -75,21 +75,40 @@ class Me extends EndpointPaging {
     });
   }
 
-  Future<Player> player([String? market]) async {
+  Future<Player?> player([String? market]) async {
     var jsonString =
         await _api._get('v1/me/player?' + _buildQuery({'market': market}));
-    final map = json.decode(jsonString);
-    return Player.fromJson(map);
+    if (jsonString.isNotEmpty) {
+      final map = json.decode(jsonString);
+      return Player.fromJson(map);
+    } else {
+      return null;
+    }
   }
 
-  Future<void> play(String? uri) async {
+  Future<void> setPlayer(String deviceId, {bool? play}) async {
     await _api._put(
+      'v1/me/player',
+      json.encode({
+        'device_ids': [deviceId],
+        'play': play,
+      }),
+    );
+  }
+
+  Future<void> play(String? uri, {String? context, dynamic offset}) async {
+    if (uri == null && context == null) {
+      await _api._put('$_path/player/play', '');
+    } else {
+      await _api._put(
         '$_path/player/play',
-        uri != null
-            ? json.encode({
-                'uris': [uri],
-              })
-            : '');
+        json.encode({
+          'context_uri': context,
+          'offset': offset,
+          'uris': uri != null ? [uri] : null,
+        }),
+      );
+    }
   }
 
   Future<void> pause({String? deviceId}) async {
@@ -97,6 +116,18 @@ class Me extends EndpointPaging {
         _buildQuery({
           'deviceId': deviceId,
         }));
+  }
+
+  Future<void> queue(String uri) async {
+    await _api._post('$_path/player/queue?' + _buildQuery({'uri': uri}));
+  }
+
+  Future<void> skipNext() async {
+    await _api._post('$_path/player/next');
+  }
+
+  Future<void> skipPrevious() async {
+    await _api._post('$_path/player/previous');
   }
 
   /// Get the current user's top tracks.
